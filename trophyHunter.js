@@ -4,6 +4,8 @@
 // @match       https://www.torn.com/*
 // @version     3.1
 // @grant       none
+// @uploadurl 
+// @updateurl 
 // ==/UserScript==
 
 (function() {
