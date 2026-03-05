@@ -1,39 +1,165 @@
 // ==UserScript==
-// @name        Torn Trophy Hunter v3 Elite - Final
-// @namespace   GeminiAI.Torn
-// @match       https://www.torn.com/*
-// @version     3.1
-// @grant       none
-// @uploadurl 
-// @updateurl 
+// @name         Torn Trophy Hunter v3.4 Elite
+// @namespace    GeminiAI.Torn
+// @match        https://www.torn.com/*
+// @version      3.4
+// @author       Gemini & CurtDaHurt
+// @uploadurl    https://raw.githubusercontent.com/curtdahurt/TrophyHunter_elite/refs/heads/main/trophyHunter.js
+// @updateurl    https://raw.githubusercontent.com/curtdahurt/TrophyHunter_elite/refs/heads/main/trophyHunter.js
+// @downloadurl  https://raw.githubusercontent.com/curtdahurt/TrophyHunter_elite/refs/heads/main/trophyHunter.js
+// @grant        GM_xmlhttpRequest
+// @connect      raw.githubusercontent.com
 // ==/UserScript==
 
 (function() {
     'use strict';
 
-    // Medal Requirement DB (Key: personalstat name)
-    const medalRequirements = [
-        { name: "Civil Offence", stat: "crimes", goal: 100, cat: "Crime" },
-        { name: "Career Criminal", stat: "crimes", goal: 5000, cat: "Crime" },
-        { name: "Legendary Criminal", stat: "crimes", goal: 50000, cat: "Crime" },
-        { name: "Warrior", stat: "attackswon", goal: 100, cat: "Combat" },
-        { name: "Warlord", stat: "attackswon", goal: 5000, cat: "Combat" },
-        { name: "Conqueror", stat: "attackswon", goal: 10000, cat: "Combat" },
-        { name: "Jetsetter", stat: "traveltimes", goal: 100, cat: "Travel" },
-        { name: "World Traveller", stat: "traveltimes", goal: 1000, cat: "Travel" },
-        { name: "Addict", stat: "drugsused", goal: 250, cat: "Misc" },
-        { name: "Toxic Legend", stat: "drugsused", goal: 5000, cat: "Misc" },
-        { name: "Billionaire", stat: "networth", goal: 1000000000, cat: "Misc" }
-    ];
-
-    let currentCat = "All";
+    const GITHUB_JSON_URL = "https://raw.githubusercontent.com/curtdahurt/TrophyHunter_elite/main/awards.json";
+    let awardDB = {};
+    let activeCat = "Combat";
 
     function createUI() {
         if (document.getElementById("thElite")) return;
-
         const panel = document.createElement("div");
         panel.id = "thElite";
-        panel.style = "position:fixed; top:80px; right:20px; width:350px; background:#222; color:#fff; border:1px solid #444; z-index:9999; padding:12px; font-family:Arial, sans-serif; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border-radius:4px;";
+        panel.style = "position:fixed; top:70px; right:20px; width:400px; background:#111; color:#fff; border:1px solid #333; z-index:9999; padding:15px; font-family:Arial, sans-serif; border-radius:10px; box-shadow: 0 0 20px #000;";
+
+        const savedKey = localStorage.getItem("th_api_key") || "";
+
+        panel.innerHTML = `
+            <div id="thHeader" style="cursor:move; font-weight:bold; color:#4caf50; display:flex; justify-content:space-between; margin-bottom:10px;">
+                <span>🎯 TROPHY HUNTER ELITE v3.4</span>
+                <span id="closeTh" style="cursor:pointer">✕</span>
+            </div>
+            <div style="margin-bottom:12px;">
+                <input type="password" id="thKeyInput" placeholder="API Key" value="${savedKey}" style="width:70%; background:#222; color:#0f0; border:1px solid #444; padding:5px; border-radius:4px;">
+                <button id="saveKey" style="width:25%; cursor:pointer; background:#444; color:#fff; border:none; border-radius:4px; padding:5px;">SYNC</button>
+            </div>
+            <div id="thTabs" style="display:flex; gap:5px; margin-bottom:15px; overflow-x:auto; padding-bottom:5px;"></div>
+            <div id="thList" style="max-height:400px; overflow-y:auto; padding-right:5px;">
+                <p style="color:#666; text-align:center;">Syncing award database from GitHub...</p>
+            </div>
+        `;
+
+        document.body.appendChild(panel);
+        initSync();
+        dragElement(panel);
+    }
+
+    async function initSync() {
+        // Fetch external award list
+        GM_xmlhttpRequest({
+            method: "GET",
+            url: GITHUB_JSON_URL,
+            onload: function(response) {
+                try {
+                    awardDB = JSON.parse(response.responseText);
+                    renderTabs();
+                    const key = localStorage.getItem("th_api_key");
+                    if (key) loadTornData(key);
+                } catch (e) {
+                    document.getElementById("thList").innerHTML = "Error: Create 'awards.json' in your GitHub repo.";
+                }
+            }
+        });
+
+        document.getElementById("saveKey").onclick = () => {
+            const key = document.getElementById("thKeyInput").value.trim();
+            localStorage.setItem("th_api_key", key);
+            loadTornData(key);
+        };
+        
+        document.getElementById("closeTh").onclick = () => document.getElementById("thElite").remove();
+    }
+
+    function renderTabs() {
+        const tabsDiv = document.getElementById("thTabs");
+        tabsDiv.innerHTML = Object.keys(awardDB).map(cat => `
+            <button class="tab-btn" data-cat="${cat}" style="padding:4px 8px; font-size:11px; cursor:pointer; background:${cat === activeCat ? '#4caf50' : '#333'}; color:#fff; border:none; border-radius:4px; white-space:nowrap;">${cat}</button>
+        `).join('');
+
+        document.querySelectorAll(".tab-btn").forEach(btn => {
+            btn.onclick = (e) => {
+                activeCat = e.target.getAttribute("data-cat");
+                document.querySelectorAll(".tab-btn").forEach(b => b.style.background = "#333");
+                e.target.style.background = "#4caf50";
+                loadTornData(localStorage.getItem("th_api_key"));
+            };
+        });
+    }
+
+    async function loadTornData(key) {
+        if(!key) return;
+        const listDiv = document.getElementById("thList");
+        listDiv.innerHTML = "Querying API...";
+
+        try {
+            const res = await fetch(`https://api.torn.com/user/?selections=personalstats,profile&key=${key}`);
+            const data = await res.json();
+            if (data.error) throw new Error(data.error.error);
+
+            renderCategory(data.personalstats, data.age);
+        } catch (e) {
+            listDiv.innerHTML = `<span style="color:red">Error: ${e.message}</span>`;
+        }
+    }
+
+    function renderCategory(stats, age) {
+        const listDiv = document.getElementById("thList");
+        let html = "";
+        const group = awardDB[activeCat] || [];
+
+        group.forEach(item => {
+            const current = stats[item.stat] || 0;
+            const dailyAvg = current / (age || 1);
+
+            item.goals.forEach(goal => {
+                const isComplete = current >= goal;
+                const remaining = Math.max(goal - current, 0);
+                const pct = Math.min((current / goal) * 100, 100).toFixed(1);
+                
+                // ETA and Daily Goal Logic
+                const daysLeft = dailyAvg > 0 ? Math.ceil(remaining / dailyAvg) : "∞";
+                // Daily Goal: Target completion in 30 days OR current pace (whichever is faster)
+                const dailyTarget = isComplete ? 0 : Math.ceil(remaining / 30); 
+
+                html += `
+                    <div style="background:#1a1a1a; margin-bottom:8px; padding:10px; border-radius:6px; border-left:4px solid ${isComplete ? '#4caf50' : '#444'}">
+                        <div style="display:flex; justify-content:space-between; font-size:12px;">
+                            <span style="font-weight:bold;">${item.label} ${goal.toLocaleString()}</span>
+                            <span style="color:${isComplete ? '#4caf50' : '#ffa500'}">${isComplete ? '✓' : 'ETA: ' + daysLeft + 'd'}</span>
+                        </div>
+                        <div style="font-size:10px; color:#888; margin:4px 0;">
+                            Prog: ${current.toLocaleString()} / ${goal.toLocaleString()} (${pct}%)
+                            ${!isComplete ? `<br><span style="color:#2196f3">Target for 30d completion: ${dailyTarget}/day</span>` : ''}
+                        </div>
+                        <div style="height:4px; background:#000; border-radius:2px; overflow:hidden;">
+                            <div style="width:${pct}%; height:100%; background:${isComplete ? '#4caf50' : '#2196f3'};"></div>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+        listDiv.innerHTML = html;
+    }
+
+    function dragElement(elmnt) {
+        let p1 = 0, p2 = 0, p3 = 0, p4 = 0;
+        document.getElementById("thHeader").onmousedown = (e) => {
+            p3 = e.clientX; p4 = e.clientY;
+            document.onmousemove = (e) => {
+                p1 = p3 - e.clientX; p2 = p4 - e.clientY;
+                p3 = e.clientX; p4 = e.clientY;
+                elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; // Fixed logic
+                elmnt.style.top = (elmnt.offsetTop - p2) + "px";
+                elmnt.style.left = (elmnt.offsetLeft - p1) + "px";
+            };
+            document.onmouseup = () => { document.onmousemove = null; };
+        };
+    }
+
+    setTimeout(createUI, 1000);
+})();
 
         const savedKey = localStorage.getItem("th_api_key") || "";
 
