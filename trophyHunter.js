@@ -4,9 +4,9 @@
 // @match        https://www.torn.com/*
 // @version      3.7
 // @author       Gemini & CurtDaHurt
-// @uploadurl    https://raw.githubusercontent.com/curtdahurt/TrophyHunter_elite/refs/heads/main/trophyHunter.js
-// @updateurl    https://raw.githubusercontent.com/curtdahurt/TrophyHunter_elite/refs/heads/main/trophyHunter.js
-// @downloadurl  https://raw.githubusercontent.com/curtdahurt/TrophyHunter_elite/refs/heads/main/trophyHunter.js
+// @uploadurl    https://raw.githubusercontent.com/curtdahurt/TrophyHunter_elite/refs/heads/curtdahurt-patch-1/trophyHunter.js
+// @updateurl    https://raw.githubusercontent.com/curtdahurt/TrophyHunter_elite/refs/heads/curtdahurt-patch-1/trophyHunter.js
+// @downloadurl  https://raw.githubusercontent.com/curtdahurt/TrophyHunter_elite/refs/heads/curtdahurt-patch-1/trophyHunter.js
 // @grant        GM_xmlhttpRequest
 // @connect      raw.githubusercontent.com
 // ==/UserScript==
