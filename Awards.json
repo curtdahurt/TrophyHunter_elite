@@ -2,43 +2,30 @@
   "Combat": [
     { "stat": "attackswon", "goals": [50, 250, 500, 2500, 10000, 50000], "label": "Attacks Won" },
     { "stat": "defendsmanaged", "goals": [50, 250, 500, 1000, 2500, 10000], "label": "Defends Won" },
-    { "stat": "bestkillstreak", "goals": [10, 25, 50, 100, 250, 500], "label": "Killstreak" },
-    { "stat": "criticalhits", "goals": [25, 50, 250, 500, 1000, 2500, 10000], "label": "Critical Hits" },
+    { "stat": "bestkillstreak", "goals": [10, 50, 100, 250, 500], "label": "Killstreak" },
+    { "stat": "criticalhits", "goals": [25, 100, 500, 1000, 2500, 10000], "label": "Critical Hits" },
     { "stat": "roundsfired", "goals": [1000, 10000, 100000, 1000000], "label": "Rounds Fired" },
-    { "stat": "stealthed", "goals": [100, 500, 1000, 5000], "label": "Stealthed Attacks" },
-    { "stat": "retals", "goals": [50, 250, 500, 1000], "label": "Retaliations" }
+    { "stat": "stealthed", "goals": [100, 500, 1000, 5000], "label": "Stealth Attacks" }
   ],
   "Crimes 2.0": [
     { "stat": "crimethetotal", "goals": [100, 500, 1000, 2500, 5000, 10000], "label": "Theft Skill" },
     { "stat": "crimevandalismtotal", "goals": [100, 500, 1000, 2500, 5000, 10000], "label": "Vandalism Skill" },
     { "stat": "crimecounterfeitingtotal", "goals": [100, 500, 1000, 2500, 5000, 10000], "label": "Counterfeiting Skill" },
     { "stat": "crimefraudtotal", "goals": [100, 500, 1000, 2500, 5000, 10000], "label": "Fraud Skill" },
-    { "stat": "crimeillicitservicestotal", "goals": [100, 500, 1000, 2500, 5000, 10000], "label": "Illicit Services Skill" },
-    { "stat": "crimecybercrimetotal", "goals": [100, 500, 1000, 2500, 5000, 10000], "label": "Cybercrime Skill" },
-    { "stat": "crimeextortiontotal", "goals": [100, 500, 1000, 2500, 5000, 10000], "label": "Extortion Skill" },
-    { "stat": "crimeillegalproductiontotal", "goals": [100, 500, 1000, 2500, 5000, 10000], "label": "Illegal Production Skill" }
+    { "stat": "crimeillicitservicestotal", "goals": [100, 500, 1000, 2500, 5000, 10000], "label": "Disposal Skill" },
+    { "stat": "crimecybercrimetotal", "goals": [100, 500, 1000, 2500, 5000, 10000], "label": "Cracking Skill" }
   ],
   "Travel": [
     { "stat": "traveltimes", "goals": [50, 100, 250, 500, 1000], "label": "Total Flights" },
     { "stat": "argtravel", "goals": [50], "label": "Flights: Argentina" },
     { "stat": "mextravel", "goals": [50], "label": "Flights: Mexico" },
-    { "stat": "switravel", "goals": [50], "label": "Flights: Switzerland" },
     { "stat": "uaetravel", "goals": [50], "label": "Flights: UAE" },
     { "stat": "itemsmuggle", "goals": [100, 500, 1000, 5000], "label": "Items Smuggled" }
   ],
-  "Commitment": [
-    { "stat": "daysbeendonator", "goals": [30, 365, 1000], "label": "Donator Days" },
-    { "stat": "timeplayed", "goals": [1000, 5000, 10000], "label": "Hours Played" },
-    { "stat": "marrieddays", "goals": [50, 100, 250, 500, 750, 1500], "label": "Days Married" },
-    { "stat": "level", "goals": [10, 50, 75, 100], "label": "Level Reached" }
-  ],
   "Misc": [
-    { "stat": "networth", "goals": [1000000, 100000000, 1000000000, 10000000000, 100000000000], "label": "Networth ($)" },
+    { "stat": "networth", "goals": [1000000, 100000000, 1000000000, 10000000000], "label": "Networth ($)" },
     { "stat": "drugsused", "goals": [50, 250, 500, 1000, 5000], "label": "Drugs Used" },
-    { "stat": "hospitaltime", "goals": [1000, 5000, 10000, 50000], "label": "Hospital Mins" },
-    { "stat": "jailtime", "goals": [1000, 5000, 10000, 50000], "label": "Jail Mins" },
-    { "stat": "medicalitemsused", "goals": [500, 2500, 5000, 10000], "label": "Medical Items" },
-    { "stat": "cityfinds", "goals": [50, 250, 500, 1000], "label": "City Finds" },
-    { "stat": "bountiesplaced", "goals": [10, 50, 250, 500], "label": "Bounties Placed" }
+    { "stat": "medicalitemsused", "goals": [500, 2500, 5000, 10000], "label": "Med Items" },
+    { "stat": "cityfinds", "goals": [50, 250, 500, 1000], "label": "City Finds" }
   ]
 }
