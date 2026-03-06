@@ -14,7 +14,7 @@
 (function() {
     'use strict';
 
-    const GITHUB_JSON_URL = "https://raw.githubusercontent.com/curtdahurt/TrophyHunter_elite/main/awards.json";
+    const GITHUB_JSON_URL = "https://raw.githubusercontent.com/curtdahurt/TrophyHunter_elite/curtdahurt-patch-1/awards.json";
     let awardDB = {};
     let activeCat = "Combat";
     let view = "main"; // "main" or "settings"
